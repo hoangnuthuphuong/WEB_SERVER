@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partial/head.ejs') %>
+<body>
+
+<%- include('partial/top_header.ejs') %>
+<%- include('partial/nav.ejs') %>
+
+<div class="container-fluid container-margin mt-15" style="height: calc(100vh - 220px);">
+  <div class="row" style="height: calc(100vh - 300px);">
+    <!-- place your content here -->
+    <div class="container-fluid container-margin">
+      <h2 style="text-decoration: underline;">R3 - Items Leadtime upload page</h2>
+      <!-- Table to display records -->
+      <div class="row" id="loading-div">
+          <div class="mt-3 p-2 bg-dark text-white" style="width: 100%;">
+            <div class="container-fluid container-margin">
+              <form id="'upload_form" enctype="multipart/form-data">
+                <div class="form-group">
+                  <label for="fileUpload">Select File:</label>
+                  <input type="file" class="form-control-file" id="fileUpload" name="fileUpload">
+                </div>
+                <!-- <input type='submit' id='submit' style='display: none;'> -->
+                <button id="btn_upload_Bom" class="btn btn-primary">Upload</button>
+                <button id="btn_view_style" class="btn btn-info" disabled="true">Check by item</button>
+                <button id="btn_download_template" class="btn btn-link">Download Current R3 - Item leadtime and template</button>
+              </form>
+            </div>
+          </div>
+      </div>
+      <div class="row" id="loading-spinner">
+        <div class="bg-dark text-white mt-3 p-2 " style="width: 100%;">
+          <h3>Uploading file.....</h3>
+          <div class="mt-5 d-flex justify-content-center bg-dark text-white align-items-center">
+            <div class="spinner-border bg-dark text-white" role="status">
+              <!-- <span class="visually-hidden">Loading...</span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive mt-1" style="height: calc(100vh - 420px); overflow-y: scroll;background-color: whitesmoke;">
+        <style>
+          .table-responsive {
+            position: relative;
+            overflow: auto;
+          }
+    
+          .table-fixed-header thead {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 1;
+          }
+        </style>
+        <!-- <table style="background-color: whitesmoke;" class="table table-bordered table-hover table-fixed-header mt-2" id="style_table">
+          <thead>
+            <tr >
+              <th>ID</th>
+              <th>PLANT</th>
+              <th>STYLE</th>
+              <th>COLOR</th>
+              <th>SIZE</th>
+              <th>TYPE</th>
+              <th>ITEM</th>
+              <th>i_COLOR</th>
+              <th>i_ATTRIBUTE</th>
+              <th>i_SIZE</th>
+              <th>SPREAD CD</th>
+              <th>New Usage</th>
+              <th>userupdate</th>
+              <th>timeupdate</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table> -->
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+<%- include('partial/footer.ejs') %>
+<!-- Edit Dialog -->
+<style>
+  .custom-modal .modal-dialog {
+    width: 60%;
+    max-width: 50%;
+    margin-top: 140px;
+  }
+</style>
+<div class="modal fade custom-modal" id="searchDialog" tabindex="-1" role="dialog" aria-labelledby="editDialogLabel" aria-hidden="true">
+  <div class="modal-dialog custom-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editDialogLabel">Please type in style code you want to review</h5>
+        <button type="button" id="closeDialog" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="style_cd">Style Code:</label>
+            <input type="text" onkeypress="selling_enter(event)" class="form-control" id="style_cd" name="style_cd" required>
+          </div>
+          <div class="form-group">
+            <label >select action:</label>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <button type="button" onclick="search_style()" class="btn btn-link">Search</button>
+            </div>
+            <div class="col-sm-6">
+              <button type="button" onclick="search_style()" class="btn btn-link">Show data</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Bootstrap JS and jQuery -->
+
+
+<script>
+  window.onload = function() {
+  var element = document.getElementById("nav_bom");
+  element.classList.add("active");
+  };
+  function formatDate(datestr) {
+    date= new Date(datestr);
+    console.log(date);
+    const year = 1900+date.getYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  function openDialog() {
+    // Get the row data based on the row identifier
+    //const rowData = getRowData(rowId); // Implement this function to fetch row data as needed
+    // Populate the form fields with the row data
+    // $('#email').val(rowData.email);
+    // Show the dialog
+    $('#searchDialog').modal('show');
+  }
+  function selling_enter(event){
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      search_style()
+    }
+  }
+  function search_style(){
+    let style_cd=$('#style_cd').val();
+    let data_send = {
+      style_cd:style_cd
+        };
+    console.log(data_send)
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("post", "/ais/Bom_search_style", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(JSON.stringify(data_send));
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4) {
+        if (this.status == 200){
+          var res_result=this.responseText
+          var ttdt=''
+          if (res_result=="something went wrong"){
+            Swal.fire("AIS notification", "Something went wrong!!!\n please try again later.", "warning");
+          } 
+          else{
+            // sessionStorage.setItem('res_program_stt',res_result);
+            // alert(res_result)
+            // if (res_result.includes('Thank')){
+            //   window.location.reload()
+            // }
+              info=JSON.parse(res_result)
+              console.log(info)
+              if (info.length>0){
+                for (i=0;i<info.length;i++){
+                  ttdt+='<tr><td>'+parseInt(i+1) + '</td><td >'+info[i].PLANT_CD+ '</td><td >'+info[i].STYLE_CD+ '</td><td >'+info[i].COLOR_CD + '</td><td >'+info[i].SIZE_CD + '</td><td >' + info[i].STYLE_TYPE
+                  ttdt+='</td><td >'+info[i].ITEM_STYLE+ '</td><td >'+String(info[i].ITEM_COLOR).padStart(3, '0') + '</td><td >'+info[i].ITEM_ATTRIBUTE + '</td><td >' + info[i].ITEM_SIZE
+                  ttdt+='</td><td >'+ info[i].SPREAD_CD+ '</td><td >'+ info[i].NEW_USAGE+'</td><td >'+ info[i].UserUpdate+'</td><td >'+formatDate(info[i].TimeUpdate)+'</td></tr>';
+                }
+              }
+              else{
+                Swal.fire("AIS notification", "no record found for "+style_cd, "success");
+              }
+              $('#style_table tbody').html(ttdt);
+              document.getElementById('closeDialog').click();
+            }
+        
+        }
+        else if (this.status === 302) {
+        // Redirect occurred
+          alert('need to login before upload')
+          window.location.href = '/login';
+        } 
+        else {
+                        // Other error occurred
+          console.log('Error:', xhr.status);
+        }
+      }
+    }
+  }
+  function processInput() {
+    return new Promise((resolve, reject) => {
+      Swal.fire({
+        title: 'Enter Plant download',
+        input: 'text',
+        inputAttributes: {
+          autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        showLoaderOnConfirm: true,
+        preConfirm: (plant) => {
+          // Resolve the Promise with the entered value
+          resolve(plant);
+        },
+        didClose: () => {
+          // Reject the Promise if the cancel button was clicked
+          reject('Canceled');
+        }
+      });
+    });
+  }
+</script>
+</body>
+<script>
+  window.addEventListener('load', function () {
+    document.getElementById('loading-spinner').style.display = 'none';
+  });
+  $('#upload_form').submit(function(event) {
+          event.preventDefault();
+  });
+  document.getElementById('btn_view_style').addEventListener('click', function(){
+    event.preventDefault();
+    console.log('button view style clicked');
+    openDialog()
+  });
+  document.getElementById('btn_download_template').addEventListener('click', function(){
+    event.preventDefault();
+
+    console.log('button download BOM clicked');
+    processInput()
+    .then((plant) => {
+      console.log('Input value:', plant);
+      // Do something with the input value
+      document.getElementById('btn_download_template').disabled=true;
+      document.getElementById('btn_download_template').innerText='Downloading...'
+      let data_send = {
+        command:'download_r3_item',
+        plant:plant
+        };
+      console.log(data_send)
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("post", "/ais/download_r3_item", true);
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.send(JSON.stringify(data_send));
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200){
+            var res_result=this.responseText
+            console.log(res_result)
+            var ttdt=''
+            if (res_result=="connection error"){
+              Swal.fire("AIS notification", "Something went wrong!!!\n please try again later.", "warning");
+            } 
+            else{
+              const link = document.createElement('a');
+              // var link=document.getElementById('adownload')
+              // Set the file URL
+              link.href = '/download/R3/item_leadtime/'+res_result;
+              // Set the desired file name
+              link.download = res_result;
+              // Trigger the click event on the link
+              link.click();
+              Swal.fire("Success!","File have been downloaded","success")
+              document.getElementById('btn_download_template').disabled=false;
+              document.getElementById('btn_download_template').innerText='Download Current R3 item leadtime and Template'
+              }
+          }
+          else if (this.status === 302) {
+                      // Redirect occurred
+                        alert('need to login before take action')
+                        window.location.href = '/login';
+                      } 
+          else {
+              // Other error occurred
+              console.log('Error:', xhttp.status);
+          }
+        }
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      // Handle error
+    });
+
+
+  });
+  document.getElementById('btn_upload_Bom').addEventListener('click', function(){
+    event.preventDefault();
+    console.log('button clicked');
+    var spinner = document.getElementById('loading-spinner');
+    var divload= document.getElementById('loading-div');
+    if (document.getElementById('fileUpload').value!=''){
+            console.log('pass to here')
+            var xsend=new XMLHttpRequest();
+            var fileInput=document.getElementById('fileUpload');
+            var file=fileInput.files[0];
+            console.log(file['name']);
+            var formData=new FormData();
+            formData.append('file_excel', file);
+            if (file!=null){
+                xsend.open('POST', '/ais/Upload_R3_item', true);
+                xsend.send(formData);
+                // alert('file sending, please wait...');
+                spinner.style.display = 'block';
+                divload.style.display = 'none';
+            }
+            xsend.onreadystatechange=function(){
+                if (this.readyState==4){
+                    console.log(this.status)
+                    if (this.status==200){
+                    //done
+                    result=xsend.responseText;
+                    // console.log(result);
+                    // alert(result);
+                    Swal.fire("AIS notification", result, "info");
+                    spinner.style.display = 'none';
+                    divload.style.display = 'block';
+                    }
+                    else if (this.status === 302) {
+                    // Redirect occurred
+                      alert('need to login before upload')
+                      window.location.href = '/login';
+                    } 
+                    else {
+                        // Other error occurred
+                        console.log('Error:', xhr.status);
+                    }
+
+              } 
+              else {
+                  console.log(this);
+              }
+            }
+        }
+    else{
+      // console.log("chua chon file")
+      Swal.fire("AIS notification", "Please select file first.", "info");
+    }
+  })
+
+</script>
+
+
+
+</html>

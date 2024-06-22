@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ROH Planning</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css"> -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.purple-indigo.min.css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/CSS/mnk.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      @media print {
+        header, footer {
+          display: none;
+        }
+        @page {
+          size: auto;
+          margin: 25mm 25mm 25mm 25mm;
+          header: none;
+          footer: none;
+        }
+        #form_select{
+            display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="form_select">
+        <form>
+            <label for="group">Group:</label>
+            <select id="group" name="group">
+              <option >Select Group</option>
+              <option >035-039</option>
+              <option >059-066</option>
+              <option >204-210</option>
+            </select>
+          
+            <label for="shift">Shift:</label>
+            <select id="shift" name="shift">
+              <option >R</option>
+              <option >B</option>
+
+            </select>
+          
+            <label for="week">Week:</label>
+            <select id="week" name="week">
+              <option >Select Week</option>
+              <option >1</option>
+              <option >2</option>
+              <option >3</option>
+              <option >4</option>
+              <option >5</option>
+              <option >6</option>
+              <option >7</option>
+              <option >8</option>
+
+            </select>
+            
+        </form>
+        <button id="rf_data">get_data</button>
+        <button id="printButton">Print</button>
+    </div>
+    
+    <div id="content">
+      <div>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor lacus ut leo laoreet, eu euismod lectus blandit. Nam rhoncus dictum ex, eget tempor nisi congue vel.</p>
+        <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In hac habitasse platea dictumst. Nulla bibendum magna eget nulla dictum, a molestie eros commodo. Sed auctor tellus ut sapien faucibus, et semper libero varius.</p>
+      </div>
+      <div class="space"></div>
+      <div>
+        <p>Nam quis sapien efficitur, pellentesque ipsum in, laoreet justo. Donec quis libero et sapien faucibus viverra. Nam eget facilisis ex. Suspendisse luctus lacus ut dictum dictum.</p>
+        <p>Suspendisse euismod elit in congue molestie. Nulla facilisi. Sed bibendum, metus at elementum vestibulum, ligula ex ullamcorper nisi, in pharetra dolor sapien a justo.</p>
+      </div>
+    </div>
+
+    <script>
+      const printButton = document.getElementById("printButton");
+      const refreshButton=document.getElementById('rf_data')
+      printButton.addEventListener("click", () => {
+        window.print();
+      });
+      refreshButton.addEventListener("click",()=>{
+        get_cbc()
+      })
+
+      function get_cbc() {
+        var group=document.getElementById("group").value
+        var shift=document.getElementById("shift").value
+        var week=document.getElementById("week").value
+        data_send = {
+            group:group,
+            shift:shift,
+            week:week
+          };
+        console.log(data_send)
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+                var res_result=this.responseText
+                if (res_result=="nodata"){
+                  swal("Thông báo từ hệ thống!","chưa có dữ liệu cbc", "warning");
+                } 
+                else{
+                  ls=JSON.parse(res_result)
+                  console.log(ls)
+                  if (ls.length>0){
+                      var gr0=""
+                      var st0=""
+                      var html=""
+                      var tbl=""
+                      for (i=0;i<ls.length;i++){
+                        gr1=ls[i].gr
+                        st1=gr[i].style
+                        if (st0==""){
+                          tbl=`
+                                <div class="spacex"></div>
+                                <div>
+                                  <h3>Kết quả CBC Group ${group} - Shift: ${shift} - Style: ${st1}</h3>
+                                  <br><br>
+                                  <table style='border-collapse: collapse; border: 1px solid;'>
+                                    <thead>
+                                        <tr style="text-align: right;">
+                                          <th style='border: 1px solid;padding: 10px;'>SEQ</th>
+                                          <th style='border: 1px solid;padding: 10px;'>operation</th>
+                                          <th style='border: 1px solid;padding: 10px;'>qty</th>
+                                          <th style='border: 1px solid;padding: 10px;'>mat</th>
+                                          <th style='border: 1px solid;padding: 10px;'>EFF</th>
+                                          <th style='border: 1px solid;padding: 10px;'>sam</th>
+                                          <th style='border: 1px solid;padding: 10px;'>output</th>
+                                          <th style='border: 1px solid;padding: 10px;'>inc_op</th>
+                                          <th style='border: 1px solid;padding: 10px;'>dec_op</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].SEQ}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].operation}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].qty}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].mat}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].EFF}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].sam}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].output}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].inc_op}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].dec_op}</td>
+                                        </tr>
+                                        `
+
+                        }
+                        else{
+                          if (st0!=st1){
+                            tbl=`
+                                <div class="space"></div>
+                                <div>
+                                  <h3>Kết quả CBC Group "+gr+" - Shift "+shift+" - Style: "+st1+"</h3>
+                                  <br><br>
+                                  <table style='border-collapse: collapse; border: 1px solid;'>
+                                    <thead>
+                                        <tr style="text-align: right;">
+                                          <th style='border: 1px solid;padding: 10px;'>SEQ</th>
+                                          <th style='border: 1px solid;padding: 10px;'>operation</th>
+                                          <th style='border: 1px solid;padding: 10px;'>qty</th>
+                                          <th style='border: 1px solid;padding: 10px;'>mat</th>
+                                          <th style='border: 1px solid;padding: 10px;'>EFF</th>
+                                          <th style='border: 1px solid;padding: 10px;'>sam</th>
+                                          <th style='border: 1px solid;padding: 10px;'>output</th>
+                                          <th style='border: 1px solid;padding: 10px;'>inc_op</th>
+                                          <th style='border: 1px solid;padding: 10px;'>dec_op</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].SEQ}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].operation}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].qty}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].mat}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].EFF}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].sam}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].output}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].inc_op}</td>
+                                          <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].dec_op}</td>
+                                        </tr>
+                                        `
+                          }
+                          else {
+                                      tbl=`
+                                        <tr>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].SEQ}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].operation}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].qty}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].mat}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].EFF}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].sam}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].output}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].inc_op}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].dec_op}</td>
+                                          </tr>
+                                          `
+                          }
+                        }
+                        html+=tbl
+                        gr0=gr1
+                        st0=st1
+                      }
+                      document.getElementById('content').innerHTML=html
+                  }
+                }
+            }
+          };
+          xhttp.open("post", '/ie/cbc_weekly', true);
+          // var id= document.getElementById("idreq").value;
+          // send data jason
+          xhttp.setRequestHeader("Content-type", "application/json");
+          xhttp.send(JSON.stringify(data_send));
+        }
+
+
+
+    </script>
+  </body>
+</html>

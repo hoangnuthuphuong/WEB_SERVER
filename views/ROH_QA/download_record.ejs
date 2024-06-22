@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anet Download Data</title>
+  <!-- CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css">
+  <style>
+    /* Custom styles for centering the form and setting its width */
+    .center-container {
+      height: 100vh; /* Set container height to full viewport height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Set form width to a maximum of 1/3 of screen width on laptop */
+    @media (min-width: 992px) {
+      form {
+        max-width: 33.33%;
+      }
+    }
+    
+    /* Set form width to 80% on phone */
+    @media (max-width: 767px) {
+      form {
+        width: 90%;
+      }
+    }
+
+    body {
+      background-image: url('/NAVI.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+<!-- partial/top_header.ejs -->
+  <div style="background-image: url('/15.jpg'); 
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+              width: 100%;" 
+  class="p-1 bg-primary text-center">
+    <h1>Welcome to ROH planning Web-Application</h1>
+    <p>Pages are under developing!</p> 
+</div>
+<nav class="navbar navbar-expand-sm bg-secondary navbar-light font-weight-bold">
+  <div class="container-fluid">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link active" id="home" href="#">Home</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+  <div class="container mt-5">
+    <h1 style="padding-bottom: 20px;">Select Range of Date want to retrieve data</h1>
+    <div class="row">
+      <div class="col-md-1">.</div>
+      <div class="col-md-9">
+        <form id="dateForm">
+          <div class="mb-3">
+            <label for="fromDate" class="form-label">From Date</label>
+            <input type="text" class="form-control" id="fromDate" required>
+          </div>
+          <div class="mb-3">
+            <label for="toDate" class="form-label">To Date</label>
+            <input type="text" class="form-control" id="toDate" required>
+          </div>
+          <button type="submit" style="margin-top:20px;" id="button_download" class="btn btn-primary">Start Download</button>
+        </form>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <p style="margin-top:40px;">This page purpose is to support you download all the data you had type into Anet screen with the following conditions:
+        <br>
+        1. Audit Function Code: M or Q<br>
+        2. Data input from Date ... to Date ...
+    </p>
+    </div>
+
+  </div>
+
+  <!-- JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Initialize date pickers
+      $('#fromDate').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
+      });
+
+      $('#toDate').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
+      });
+
+      // Handle form submission
+      $('#dateForm').submit(function(e) {
+        e.preventDefault();
+
+        // Get selected dates
+        var fromDate = $('#fromDate').val();
+        var toDate = $('#toDate').val();
+        document.getElementById('button_download').disabled=true;
+        document.getElementById('button_download').innerText='Downloading...';
+        console.log('button download style clicked');
+        // Do something with the input value
+        let data_send = {
+          fromdate:fromDate,
+          todate:toDate
+          };
+        console.log(data_send)
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("post", "/qa/download_typo", true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send(JSON.stringify(data_send));
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4) {
+            if (this.status == 200){
+              var res_result=this.responseText
+              console.log(res_result)
+              var ttdt=''
+              if (res_result=="connection error"){
+                Swal.fire("AIS notification", "Something went wrong!!!\n please try again later.", "warning");
+              } 
+              else{
+                const link = document.createElement('a');
+                // var link=document.getElementById('adownload')
+                // Set the file URL
+                link.href = '/download/QA/Anet_typo/'+res_result;
+                // Set the desired file name
+                link.download = res_result;
+                // Trigger the click event on the link
+                link.click();
+                Swal.fire("Success!","File have been downloaded","success")
+                document.getElementById('button_download').disabled=false;
+                document.getElementById('button_download').innerText='Start Download';
+                }
+            }
+            else {
+                // Other error occurred
+                console.log('Error:', xhttp.status);
+                document.getElementById('button_download').disabled=false;
+                document.getElementById('button_download').innerText='Start Download';
+            }
+          }
+        }
+          // Display selected dates in an alert
+          // alert('From: ' + fromDate + '\nTo: ' + toDate);
+        });
+    });
+  </script>
+</body>
+</html>

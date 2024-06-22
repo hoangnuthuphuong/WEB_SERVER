@@ -1,0 +1,68 @@
+
+<!-- partial/nav.ejs -->
+<nav class="navbar navbar-expand-sm bg-secondary navbar-light font-weight-bold">
+    <div class="container-fluid">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" id="home" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="us_style_leadtime" href="/ais/styleleadtime">Style Leadtime constraint</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" id="us_workcenter" href="/ais/update_US_workcenter">US- Mega Workcenter</a>
+        </li> -->
+        <!-- <li class="nav-item">
+          <a class="nav-link disabled" href="#">Leadtime report</a>
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">R1-R3 result</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="nav_substitute" href="/ais/update_substitution">Substitution</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" id="nav_bom" href="/ais/update_bom_actual_usage">BOM Act Usage</a>
+        </li> -->
+        <!-- drop down 1 -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_BOM" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            R3 BOM
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown_BOM">
+            <a class="dropdown-item" href="/ais/update_bom_actual_usage">Actual Usage</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">90 BOM WOVEN</a>
+            <a class="dropdown-item" href="#">95 BOM OFFLINE ITEM</a>
+          </div>
+        </li>
+        <!-- finished drop down -->
+        <!-- drop down 1 -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_leadtime" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            R1-R3 leadtime
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown_leadtime">
+            <a class="dropdown-item" href="/ais/IT_update_style_leadtime">R1 IT leadtime</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/ais/r3_item_leadtime">R3 items leadtime</a>
+          </div>
+        </li>
+        <!-- finished drop down -->
+        <!-- drop down 2 -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_user" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            User Setting
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown_user">
+            <a class="dropdown-item" href="/ais/change_password">Change password</a>
+            <a class="dropdown-item" href="/logout">Log out</a>
+            <!-- <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Option 6</a> -->
+          </div>
+        </li>
+
+
+      </ul>
+    </div>
+</nav>

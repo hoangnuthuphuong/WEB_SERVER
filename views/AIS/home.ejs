@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partial/head.ejs') %>
+<body>
+
+<%- include('partial/top_header.ejs') %>
+<%- include('partial/nav.ejs') %>
+
+<div class="container-fluid container-margin mt-5">
+  <div class="row">
+    <div class="col-sm-3">
+      <!-- <h2>About Me</h2>
+      <h5>Photo of me:</h5>
+      <div class="fakeimg">Desc Image</div>
+      <p>ROH Web-application</p> -->
+      <h3 class="mt-4">Some Links</h3>
+      <p>link to important pages</p>
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Active</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <hr class="d-sm-none">
+    </div>
+    <div class="col-sm-9">
+      <!-- <h2>R1 is running now!!!</h2>
+      <h5>Auto allocate demand base on plant's capacity available</h5>
+      <div class="fakeimg">Fake Image</div>
+      <p>Reading more..</p>
+      <p>Web apps provide convenience with instant access to services, information, 
+        and communication from any device with an internet connection, enhancing productivity and simplifying daily tasks.</p> -->
+
+      <h3 class="mt-4">Aisa Leadtime report</h3>
+      <h5>Title description, July 07, 2023</h5>
+      <img src="/Leadtime_Report/ete.jpg" style="width: 100%;" alt="ETE leadtime report">
+      <br>
+      <p>link to access file <a href="\\BKFPS1\Asia EO\AIS2\Weekly_LeadTime_Report\">\\BKFPS1\Asia EO\AIS2\Weekly_LeadTime_Report\</a></p>
+      <img src="/Leadtime_Report/pr.jpg" style="width: 100%;" alt="Prodution Leadtime report">
+      <p>Some text..</p>
+      <p>Web applications play a crucial role in today's digital landscape,
+         revolutionizing the way businesses and individuals interact online.
+         These applications provide a powerful platform for delivering services,
+         sharing information, and conducting transactions. In my job, web applications enable me to efficiently access and retrieve vast amounts of data,
+         empowering me to provide accurate and up-to-date information to users. Additionally, 
+         web applications facilitate seamless communication and collaboration, allowing for real-time interactions and enhancing productivity. 
+         They also offer a personalized and user-friendly experience, catering to diverse needs and preferences. 
+         Web applications have become indispensable tools in numerous industries, including e-commerce, 
+         finance, healthcare, education, and entertainment, driving innovation and enabling organizations to reach a global audience. 
+         In summary, web applications are a fundamental component of my work,
+         enabling me to harness the power of the web to deliver valuable services and information to users.</p>
+    </div>
+  </div>
+</div>
+
+<div class="mt-5 p-4 bg-dark text-white text-center">
+  <p>You already go through the page</p>
+</div>
+<script>
+  window.onload = function() {
+    var element = document.getElementById("home");
+    element.classList.add("active");
+    };
+
+</script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<title>Odd Inventory</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" type="text/css" href="../CSS/w3.css"/> -->
+<link rel="stylesheet" type="text/css" href="/CSS/mnk.css">
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+nav {
+  background-image: none;
+  background-image: none,none, url("./public/img_xp/bg1.jpg");
+}
+header {
+  background-image: none;
+  background-image: none,none, url("./public/img_xp/bg1.jpg");
+}
+</style>
+<body class="w3-content" style="max-width:1920px">
+
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:200px;" id="mySidebar"><br>
+  <div class="w3-container">
+    <a href="#" onclick="w3_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover-grey" title="close menu">
+      <i class="fa fa-remove"></i>
+    </a>
+    <img src="./public/img_xp/ig.png" style="width:30%;" class="w3-round"><br><br>
+    
+    <h4 class="w3-text-white"><b>Web Services</b></h4>
+    <!-- <p class="w3-text-white">Design by ngmai1</p> -->
+  </div>
+  <div class="w3-bar-block w3-text-white">
+    <a href="/odd_combine" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-th-large fa-fw w3-margin-right"></i>Combine Plan</a> 
+    <a href="/odd_inv" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal"><i class="fa fa-braille fa-fw w3-margin-right"></i>Odd Inventory</a> 
+    <a href="/cut_kanban" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-home fa-fw w3-margin-right"></i>Cutting_kanban</a>
+  </div>
+  <!-- <div class="w3-panel w3-large w3-text-white">
+    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+    <i class="fa fa-instagram w3-hover-opacity"></i>
+    <i class="fa fa-snapchat w3-hover-opacity"></i>
+    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+    <i class="fa fa-twitter w3-hover-opacity"></i>
+    <i class="fa fa-linkedin w3-hover-opacity"></i>
+  </div> -->
+</nav>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div id="main-page" class="w3-main" style="margin-left:200px">
+
+  <!-- Header -->
+  <header id="combine_plan">
+    <a href="#"><img src="./public/img_xp/ig.png" style="width:65px;" class="w3-circle w3-right w3-margin w3-hide-large w3-hover-opacity"></a>
+    <span class="w3-button w3-hide-large w3-xxlarge w3-hover-text-grey" onclick="w3_open()"><i class="fa fa-bars"></i></span>
+    <div class="w3-container">
+      <div class="w3-col" style="width:92%">
+        <div class="w3-container">
+          <h1 class="w3-text-white"><b>Odd online monitoring by shift</b></h1>
+          <div class="w3-section w3-bottombar w3-padding-16">
+            <span class="w3-margin-right w3-text-white">Filter:</span> 
+            <button class="w3-button w3-black">ALL</button>
+            <button class="w3-button w3-white"><i class="fa fa-scissors w3-margin-right"></i>Cut_process</button>
+            <button class="w3-button w3-white w3-hide-small"><i class="fa fa-braille w3-margin-right"></i>Odd_process</button>
+            <button class="w3-button w3-white w3-hide-small"><i class="fa fa-file-archive-o w3-margin-right"></i>Sew_process</button>
+            </div>
+        </div>
+      </div>
+      <div class="w3-col" style="width:8%">
+        <h6 class="w3-text-white"><b>Hi daik!</b></h6>
+      </div>
+    </div>
+
+
+  </header>
+  
+  <!-- First Photo Grid-->
+  <div class="w3-row-padding w3-bottombar">
+    <div class="w3-row">
+      <h3 style="padding-left: 15px;">Lọc thông tin:</h3>
+    </div>  
+    <div class="w3-row"  style="height: 80px; background-color: rgb(255, 255, 255); margin-top: 3px; border: solid 1px rgb(255, 255, 255) ;" >
+        <div class="w3-col" style="width: 30%; border: #37474F;"> 
+          <div class="w3-row" style="padding-top: 15px; padding-bottom: 15px; padding-left: 15px; background-color: #c2cdda; margin: auto;">
+            <div class="w3-col" style="width: 20%;">
+              <label style="text-align: left; padding-top:5px" id="style">Style:</label><br>
+            </div>
+            <div class="w3-col" style="width: 50%;">
+              <input style="text-align: left; margin-right: 15px;" class="form-control " type="text" name="style_in" id="style_in">
+            </div>
+            <div class="w3-col" style="width: 10%;">
+              .
+            </div>
+          </div>  
+        </div>   
+        <div class="w3-col" style="width: 25%; border: #37474F;"> 
+          <div class="w3-row" style="padding-top: 15px; padding-bottom: 15px; padding-left: 15px; background-color: #c2cdda; margin: auto;">
+            <div class="w3-col" style="width: 20%;">
+              <label style="text-align: left; padding-top:5px" id="color">Color:</label><br>
+            </div>
+            <div class="w3-col" style="width: 50%;">
+              <input style="text-align: left; margin-right: 15px;" class="form-control " type="text" name="color_in" id="color_in">
+            </div>
+            <div class="w3-col" style="width: 10%;">
+              .
+            </div>
+          </div>  
+        </div>  
+        <div class="w3-col" style="width: 25%; border: #37474F;"> 
+          <div class="w3-row" style="padding-top: 15px; padding-bottom: 15px; padding-left: 15px; background-color: #c2cdda; margin: auto;">
+            <div class="w3-col" style="width: 20%;">
+              <label style="text-align: left; padding-top:5px" id="size">Size:</label><br>
+            </div>
+            <div class="w3-col" style="width: 50%;">
+              <input style="text-align: left; margin-right: 15px;" class="form-control " type="text" name="size_in" id="size_in">
+            </div>
+            <div class="w3-col" style="width: 10%;">
+              .
+            </div>
+          </div>  
+        </div> 
+        <div class="w3-col" style="width: 20%; border: #37474F;"> 
+          <div class="w3-row" style="padding-top: 15px; padding-bottom: 15px; padding-left: 15px; background-color: #c2cdda; margin: auto;">
+            <button type="button" value="submit" class="btn btn-primary w3-blue" onclick="inv_search()"><span class="glyphicon glyphicon-search"></span>Search</button>
+          </div>  
+        </div>       
+      </div>
+
+
+
+
+  </div>
+  
+  <!-- Second Grid-->
+  <div class="w3-row-padding w3-bottombar">
+                <!-- hien thi thong tin logs -->
+                
+                    <div class="w3-row">
+                      <h3 style="padding-left: 15px;">Bảng kết hợp chi tiết:</h3>
+                    </div>    
+                    <div class="w3-row">
+                      <div class="w3-col" style="width:100%">
+                        <style>
+                          #tablea {
+                              font-family: Arial, Helvetica, sans-serif;
+                              border-collapse: collapse;
+                              border-radius: 15px;
+                              /* border: 1px solid #ffffff; */
+                              overflow: scroll !important;
+                          }
+                          
+                          #tablea td {
+                              text-align: center !important;
+                              /* border: 1px solid #3a3a3a; */
+                              height: 10px !important;
+                              border: 1px solid #ddd;
+                          }
+                          
+                          #tablea th {
+                              margin-top: 0px;
+                              border: 1px solid #ddd;
+                              padding: 8px;
+                              border: 1px solid #ffffff;
+                              height: 15px !important;
+                          }
+                          
+                          #tablea tr:nth-child(even) {
+                              background-color: #f2f2f2;
+                          }
+                          
+                          #tablea tr:hover {
+                              background-color: #ddd;
+                          }
+            
+                          #tablea th {
+                              padding-top: 3px;
+                              padding-bottom: 3px;
+                              text-align: center;
+                              background-color: #0099ff;
+                              color: white;
+                          }
+                          #tablea {
+                              border-collapse: collapse;
+                              width: 100%;
+                          }
+                          thead {
+                            position: sticky;
+                            top: 0; /* Don't forget this, required for the stickiness */
+                            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+                          }
+                        </style>  
+                        <div style="height: 540px; overflow-y: scroll;">
+                                <table id="tablea" style="width:98%; margin: auto;" onclick="detail_cutlot()">
+                                  <thead>
+                                    <tr>                      
+                                      <th style="text-align: center;">Plant</th>
+                                      <th style="text-align: center;">Location</th>
+                                      <th style="text-align: center;">Status</th>
+                                      <th style="text-align: center;">Style</th> 
+                                      <th style="text-align: center;">Color</th>
+                                      <th style="text-align: center;">Size</th> 
+                                      <th style="text-align: center;">Sel_size</th> 
+                                      <th style="text-align: center;">Qty</th> 
+                                      <th style="text-align: center;">timeupdate</th> 
+                                      <th style="text-align: center;">result</th> 
+                                      <th style="text-align: center;">cut_lot</th> 
+                                      <th style="text-align: center;">combine</th>
+                                      
+                                    </tr>                        
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                  </thead>
+                                </table>
+                        </div>
+                      </div>
+
+                    </div>     
+  </div>
+
+
+  
+  <div class="w3-black w3-center w3-padding-24">Powered by <a href="#" title="ngoi.mai1@hanes.com" target="_blank" class="w3-hover-opacity">DutyCall</a></div>
+
+<!-- End page content -->
+
+</div>
+
+
+
+<script type="text/javascript">
+// Script to open and close sidebar
+// setInterval(load_ecf_data, 5000);
+
+
+function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+}
+ 
+function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+}
+
+
+</script>
+
+</body>
+</html>

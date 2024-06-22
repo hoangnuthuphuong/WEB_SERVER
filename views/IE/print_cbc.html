@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @media print {
+        header, footer {
+          display: none;
+        }
+        @page {
+          size: auto;
+          margin: 25mm 25mm 25mm 25mm;
+          header: none;
+          footer: none;
+        }
+        
+        div.space {
+        page-break-before: always;
+        }
+        #form_select{
+            display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="form_select">
+        <form>
+            <label for="group">Group:</label>
+            <select id="group" name="group">
+              <option >Select Group</option>
+              <option >035-039</option>
+              <option >059-066</option>
+              <option >204-210</option>
+            </select>
+          
+            <label for="shift">Shift:</label>
+            <select id="shift" name="shift">
+              <option >R</option>
+              <option >B</option>
+
+            </select>
+          
+
+
+
+            <label for="week">Week:</label>
+            <select id="week" name="week">
+              <option >Select Week</option>
+              <option >Week 1</option>
+              <option >Week 2</option>
+              <option >Week 3</option>
+              <option >Week 4</option>
+              <option >Week 5</option>
+              <option >Week 6</option>
+              <option >Week 7</option>
+              <option >Week 8</option>
+
+            </select>
+            <input type="submit" value="Search">
+        </form>
+        <button id="printButton">Print</button>
+    </div>
+    
+    <div id="content">
+      <div>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor lacus ut leo laoreet, eu euismod lectus blandit. Nam rhoncus dictum ex, eget tempor nisi congue vel.</p>
+        <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In hac habitasse platea dictumst. Nulla bibendum magna eget nulla dictum, a molestie eros commodo. Sed auctor tellus ut sapien faucibus, et semper libero varius.</p>
+      </div>
+      <div class="space"></div>
+      <div>
+        <p>Nam quis sapien efficitur, pellentesque ipsum in, laoreet justo. Donec quis libero et sapien faucibus viverra. Nam eget facilisis ex. Suspendisse luctus lacus ut dictum dictum.</p>
+        <p>Suspendisse euismod elit in congue molestie. Nulla facilisi. Sed bibendum, metus at elementum vestibulum, ligula ex ullamcorper nisi, in pharetra dolor sapien a justo.</p>
+      </div>
+    </div>
+
+    <script>
+      const printButton = document.getElementById("printButton");
+      printButton.addEventListener("click", () => {
+        window.print();
+      });
+    </script>
+  </body>
+</html>

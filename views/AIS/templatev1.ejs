@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partial/head.ejs') %>
+<body>
+
+  <%- include('partial/top_header.ejs') %>
+  <%- include('partial/nav.ejs') %>
+
+  <div class="container">
+    <h2>US R1 Mega Workcenter Management</h2>
+
+    <!-- Add Record Form -->
+    <h3>Change list</h3>
+    <form>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+      </div>
+      <button class="btn btn-primary">Add</button>
+      <button class="btn btn-primary">Update</button>
+      <button class="btn btn-danger">Delete</button>
+    </form>
+
+    <!-- Table to display records -->
+    <h3>Records</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% records.forEach(function(record) { %>
+          <tr>
+            <td><%= record.id %></td>
+            <td><%= record.name %></td>
+            <td><%= record.email %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

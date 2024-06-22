@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ROH Planning</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-purple.min.css"> -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.purple-indigo.min.css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/CSS/mnk.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      @media print {
+        header, footer {
+          display: none;
+        }
+        @page {
+          size: auto;
+          margin: 25mm 25mm 25mm 25mm;
+          header: none;
+          footer: none;
+        }
+        #form_select{
+            display: none;
+        }
+      }
+    </style>
+  </head>
+
+
+
+<body>
+
+  <!-- Sidebar (hidden by default) -->
+      <!-- Sidebar (hidden by default) -->
+    <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left" style="display:none;z-index:100;width:25%;min-width:300px; background-image: url(/public/imgbook/bodyBG.jpg);" id="mySidebar">
+    <a href="/mechome" class="w3-bar-item w3-button" ><span class="glyphicon glyphicon-home" style="padding-right: 20px;"></span>Trang Chủ</a>
+    <a href="/mechome" class="w3-bar-item w3-button w3-blue"><span class="glyphicon glyphicon-inbox" style="padding-right: 20px;"></span>Quét thẻ downtime</a>
+    <a href="/mec/updateloc" class="w3-bar-item w3-button w3-purple"><span class="glyphicon glyphicon-refresh" style="padding-right: 20px;"></span>Cập nhật vị trí phiên bản 2</a>
+    <a href="/mec/machineupdate" class="w3-bar-item w3-button w3-purple"><span class="glyphicon glyphicon-refresh" style="padding-right: 20px;"></span>Cập nhật thông tin máy_BM</a>
+    <a href="/mec/report" class="w3-bar-item w3-button w3-purple"><span class="glyphicon glyphicon-list-alt" style="padding-right: 20px;"></span>Báo cáo Realtime</a>
+    <a href="/get/autoclose" class="w3-bar-item w3-button w3-purple"><span class="glyphicon glyphicon-list-alt" style="padding-right: 20px;"></span>danh sách máy chốt cuối ca chưa sửa</a>
+    <a href="/mec/partissue" class="w3-bar-item w3-button w3-purple"><span class="glyphicon glyphicon-usd" style="padding-right: 20px;"></span>Cấp / Phát phụ tùng</a>
+    <a href="/mec/machinemovelog" class="w3-bar-item w3-button w3-purple"><span class="glyphicon glyphicon-refresh" style="padding-right: 20px;"></span>thông tin di chuyển máy</a>
+    <a href="#" class="w3-bar-item w3-button w3-purple"><span class="glyphicon glyphicon-duplicate" style="padding-right: 20px;"></span>Mechanic KPI</a>
+    </nav>
+    <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-right" style="display:none;z-index:2;width:30%;min-width:300px; right: 0;" id="mySidebar_right">
+        <a href="javascript:void(0)"
+        class="w3-bar-item w3-button" id="name">Thông tin user đăng nhập</a>
+        <div class="w3-container w3-card-4 w3-light-grey" style="display:none;">
+        <a id="logout_ref" href="/logout" class="w3-bar-item w3-button">Logout</a>
+        </div>
+        <br>
+        <div class="form-group">
+        <button type="button" value="submit" class="btn btn-primary" style="background-color: #4B0082;" onclick="logout()"><span class="glyphicon glyphicon-floppy-saved"></span> Đăng xuất</button>
+        </div>
+    </nav>
+    <!-- Top menu -->
+    <div class="w3-top w3-center">
+        <div class="w3-purple w3-xlarge" style="width: 100%;margin:auto;">
+        <div class="w3-button w3-padding-16 w3-left" onclick="w3_open()">☰</div>
+        <div class="w3-right w3-padding-16" onclick="open_signup()" >
+        <span class="glyphicon glyphicon-user" style="padding-right: 10px;" ></span><span id="username"><%= user %></span></div>
+        <div class="w3-center w3-padding-16" style="margin: 0 auto;"><h3 style="margin: 0 auto;">CẬP NHẬT VỊ TRÍ MÁY</h3></div>
+        <a href="/lead" id="refresh" style="display: none;"></a>
+        </div>
+    </div>
+    
+    <!-- !PAGE CONTENT! -->
+    <div id="content-x" class="w3-container w3-center" style="width: 100%;margin-top:50px; margin-left: auto;" onclick="w3_close()">
+      <!-- About Section -->
+      <div class="w3-row w3-border">
+        <h1>----</h1>
+        <form style="text-align: left;" action="javascript:">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="group">chọn nhóm thao tác:</label>
+              <select class="form-control" name="group" id="group">
+                <option>001-007</option>
+                <option>008-014</option>
+                <option>015-024</option>
+                <option>025-029</option>
+                <option>030-034</option>
+                <option>035-042</option>
+                <option>043-050</option>
+                <option>051-058</option>
+                <option>059-066</option>
+                <option>067-074</option>
+                <option>075-082</option>
+                <option>083-090</option>
+                <option>091-098</option>
+                <option>106-112</option>
+                <option>113-118</option>
+                <option>201-203</option>
+                <option>204-210</option>
+                <option>211-217</option>
+                <option>218-223</option>
+                <option>224-231</option>
+                <option>232-234</option>
+                <option>239-245</option>
+                <option>246-252</option>
+                <option>253-259</option>
+                <option>260-266</option>
+                <option>277-283</option>
+                <option>284-290</option>
+                <option>291-297</option>
+                <option>298-304</option>
+                <option>305-311</option>
+                <option>312-318</option>
+                <option>319-325</option>
+                <option>326-332</option>
+                <option>333-339</option>
+                <option>340-345</option>
+                <option>346-353</option>
+              </select>
+              <br>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="shift">shift:</label>
+              <select class="form-control" name="shift" id="shift">
+                <option>R</option>
+                <option>B</option>
+              </select>
+            </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="week">week:</label>
+              <select class="form-control" name="week" id="week">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
+                <option>15</option>
+                <option>16</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="w3-row w3-border">
+        <div class="col-md-6">
+            <div class="form-group">
+              <br>
+              <br>
+              <br>
+              <br>
+              <button type="button"  id="rf_data" class="btn btn-primary" style="background-color: #4B0082;"><span class="glyphicon glyphicon-random"></span> get cbc</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+              <br>
+              <br>
+              <br>
+              <br>
+              <button type="button"  id="printButton" class="btn btn-primary" style="background-color: #4B0082;"><span class="glyphicon glyphicon-random"></span> Print</button>
+            </div>
+        </div>
+      </div>
+      <div class="w3-row w3-border">
+
+        <div id="content" style="margin-top: 10px; padding-top: 10px;">
+            <div>
+              <p> Chọn chuyền , ca và tuần muốn in cân bằng chuyền hoặc xem cân bằng chuyền</p>
+            </div>
+            <div class="space"></div>
+            <div>
+              <p> nhấn nút get CBC để xem kết quả cbc IE đã tính trước đó.
+                  nhấn nút print_cbc để in từng cbc ra giấy
+              </p>
+            </div>
+        </div>
+
+
+
+      </div>
+  
+    </div>
+
+
+  
+    <!-- Footer -->
+    <footer class="w3-row-padding w3-padding-32 w3-center">
+    </footer>
+    <script>
+        const printButton = document.getElementById("printButton");
+        const refreshButton=document.getElementById('rf_data')
+        printButton.addEventListener("click", () => {
+        window.print();
+        });
+        refreshButton.addEventListener("click",()=>{
+        get_cbc()
+        })
+
+        function get_cbc() {
+        var group=document.getElementById("group").value
+        var shift=document.getElementById("shift").value
+        var week=document.getElementById("week").value
+        data_send = {
+            group:group,
+            shift:shift,
+            week:week
+            };
+        console.log(data_send)
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var res_result=this.responseText
+                if (res_result=="nodata"){
+                    swal("Thông báo từ hệ thống!","chưa có dữ liệu cbc", "warning");
+                } 
+                else{
+                    ls=JSON.parse(res_result)
+                    console.log(ls)
+                    if (ls.length>0){
+                        var gr0=""
+                        var st0=""
+                        var html=""
+                        var tbl=""
+                        for (i=0;i<ls.length;i++){
+                        var gr1=ls[i].gr
+                        var st1=ls[i].style
+                        if (st0==""){
+                            tbl=`
+                                <div class="spacex"></div>
+                                <div>
+                                    <h3>Kết quả CBC Group ${group} - Shift: ${shift} - Style: ${st1}</h3>
+                                    <br><br>
+                                    <table style='border-collapse: collapse; border: 1px solid;'>
+                                    <thead>
+                                        <tr style="text-align: right;">
+                                            <th style='border: 1px solid;padding: 10px;'>SEQ</th>
+                                            <th style='border: 1px solid;padding: 10px;'>operation</th>
+                                            <th style='border: 1px solid;padding: 10px;'>qty</th>
+                                            <th style='border: 1px solid;padding: 10px;'>mat</th>
+                                            <th style='border: 1px solid;padding: 10px;'>EFF</th>
+                                            <th style='border: 1px solid;padding: 10px;'>sam</th>
+                                            <th style='border: 1px solid;padding: 10px;'>output</th>
+                                            <th style='border: 1px solid;padding: 10px;'>inc_op</th>
+                                            <th style='border: 1px solid;padding: 10px;'>dec_op</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].SEQ}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].operation}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].qty}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].mat}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].EFF}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].sam}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].output}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].inc_op}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].dec_op}</td>
+                                        </tr>
+                                        `
+
+                        }
+                        else{
+                            if (st0!=st1){
+                            tbl=`
+                                    </tbody>
+                                    </table>
+                                <div>
+                                <div class="space"></div>
+                                <div>
+                                    <h3>Kết quả CBC Group ${group} - Shift: ${shift} - Style: ${st1}</h3>
+                                    <br><br>
+                                    <table style='border-collapse: collapse; border: 1px solid;'>
+                                    <thead>
+                                        <tr style="text-align: right;">
+                                            <th style='border: 1px solid;padding: 10px;'>SEQ</th>
+                                            <th style='border: 1px solid;padding: 10px;'>operation</th>
+                                            <th style='border: 1px solid;padding: 10px;'>qty</th>
+                                            <th style='border: 1px solid;padding: 10px;'>mat</th>
+                                            <th style='border: 1px solid;padding: 10px;'>EFF</th>
+                                            <th style='border: 1px solid;padding: 10px;'>sam</th>
+                                            <th style='border: 1px solid;padding: 10px;'>output</th>
+                                            <th style='border: 1px solid;padding: 10px;'>inc_op</th>
+                                            <th style='border: 1px solid;padding: 10px;'>dec_op</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].SEQ}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].operation}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].qty}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].mat}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].EFF}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].sam}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].output}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].inc_op}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].dec_op}</td>
+                                        </tr>
+                                        `
+                            }
+                            else {
+                                        tbl=`
+                                        <tr>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].SEQ}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].operation}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].qty}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].mat}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].EFF}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].sam}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].output}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].inc_op}</td>
+                                            <td style='border: 1px solid;padding: 10px; text-align: left;'>${ls[i].dec_op}</td>
+                                            </tr>
+                                            `
+                            }
+                        }
+                        html+=tbl
+                        gr0=gr1
+                        st0=st1
+                        }
+                        var conten_close=`
+                                    </tbody>
+                                    </table>
+                                <div>`
+                        document.getElementById('content').innerHTML=html
+                    }
+                }
+            }
+            };
+            xhttp.open("post", '/ie/cbc_weekly', true);
+            // var id= document.getElementById("idreq").value;
+            // send data jason
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify(data_send));
+        }
+
+    </script>
+</body>
+  
+  <script>
+    function w3_open() {
+        w3_close();
+        document.getElementById("mySidebar").style.display = "block";
+    }
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("mySidebar_right").style.display = "none";
+        
+    }
+
+  </script>
+
+</html>
