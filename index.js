@@ -17,6 +17,7 @@ let db = new sqlite3.Database("./database/r1.sqlite3", (err) => {
   }
   console.log("Connected to the r1 database.");
 });
+const port = 80;
 
 app.use(express.static("public")); // thư mục chứa file public
 app.use(express.static("assets")); // những file trong folder public và access đều có thể nhìn thấy bởi người dùng web
@@ -96,7 +97,11 @@ app.get("/huyen", function (request, respone) {
 });
 
 // app.listen(8000, "localhost");
-app.listen(80);
+//app.listen(80);
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
 
 //======================================LOGIN==============================================
 

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon server.js"
+    "serve": "nodemon server.js",
+    "deploy": "gh-pages -d dist"
   },
   "author": "",
   "license": "ISC",
@@ -37,5 +38,8 @@
   "bugs": {
     "url": "https://bitbucket.org/asiaplanning/asiaplanningsystem/issues"
   },
-  "homepage": "https://bitbucket.org/asiaplanning/asiaplanningsystem#readme"
+  "homepage": "https://bitbucket.org/asiaplanning/asiaplanningsystem#readme",
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
+  }
 }
